@@ -4,23 +4,17 @@ This Ansible Role installs a rootless [Nextcloud](https://github.com/nextcloud/d
 
 ## Requirements
 
+* [podman](docs/PODMAN.md)
 * [containers.podman](https://github.com/containers/ansible-podman-collections)
 
 ## Dependencies
 
-* [podman](docs/PODMAN.md)
 * [mariadb](docs/DATABASE.md) (optional)
 * postgresql (optional)
 
 ## Role Variables
 
-```yaml
-nextcloud_config.NEXTCLOUD_ADMIN_USER: adminotaur
-nextcloud_config.NEXTCLOUD_ADMIN_PASSWORD: "{{ lookup('ansible.builtin.env', 'NEXTCLOUD_ADMIN') }}"
-nextcloud_config.MYSQL_PASSWORD: "{{ lookup('ansible.builtin.env', 'NEXTCLOUD_MARIADB') }}"
-```
-
-See the role [defaults](defaults/main.yml) and the Nextcloud [environment variable documentation](https://github.com/nextcloud/docker/blob/master/README.md#auto-configuration-via-environment-variables).
+See the role [defaults](defaults/main.yml) and the Nextcloud [environment variable documentation](https://github.com/nextcloud/docker/blob/master/README.md#auto-configuration-via-environment-variables). For a working example, see this [homelab stack](https://github.com/bleetube/satstack).
 
 ## Example Playbook
 
@@ -37,8 +31,6 @@ See the role [defaults](defaults/main.yml) and the Nextcloud [environment variab
 ## Example Deployment
 
 ```bash
-export NEXTCLOUD_ADMIN=$(pass generate -n NEXTCLOUD_ADMIN | tail -n1)
-export NEXTCLOUD_MARIADB=$(pass generate -n NEXTCLOUD_MARIADB | tail -n1)
 ansible-playbook playbooks/nextcloud.yml
 ```
 

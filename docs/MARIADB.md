@@ -29,5 +29,10 @@ mariadb_users:
     password: "{{ lookup('ansible.builtin.env', 'NEXTCLOUD_MARIADB') }}"
     priv: "nextcloud.*:ALL"
     state: present
+
+mariadb_innodb_raw: |
+    innodb_buffer_pool_size = 512M
+    key_buffer_size = 10M
+    transaction_isolation=READ-COMMITTED
 ```
 In this example, there are two users because both `localhost` and `%` (all-hosts wildcard) are [mutually exclusive](https://stackoverflow.com/q/10823854/9290). I am also using environment variables to  separate secret stores from the repository.
