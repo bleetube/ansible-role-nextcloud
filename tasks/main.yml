@@ -1,12 +1,9 @@
 ---
-#- name: Nextcloud | Assert all secrets have been configured.
-#  ansible.builtin.assert:
-#    that:
-#      - nextcloud_config.NEXTCLOUD_ADMIN_PASSWORD is defined
-#      - nextcloud_config.NEXTCLOUD_ADMIN_PASSWORD | length > 0
-#    fail_msg: "NEXTCLOUD_ADMIN_PASSWORD is not configured"
-#    quiet: true
-#  no_log: true
+- name: Assert that we are not logged in as root
+  assert:
+    that:
+      - ansible_user_id != 'root'
+    fail_msg: "Podman containers are rootless, so please do not run this role as root."
 
 - name: Ensure that only one database backend is defined
   ansible.builtin.assert:
@@ -20,24 +17,5 @@
     fail_msg: "Only one of SQLITE_DATABASE, POSTGRES_PASS or MYSQL_PASSWORD should be defined"
   no_log: true
 
-- name: Nextcloud | Create volumes
-  containers.podman.podman_volume:
-    state: present
-    name: "{{ item }}"
-    recreate: no
-    debug: no
-  loop: "{{ nextcloud_create_volumes }}"
-
-# https://github.com/nextcloud/docker/blob/master/.examples/docker-compose/with-nginx-proxy/mariadb/fpm/docker-compose.yml
-- name: Nextcloud | Create container
-  containers.podman.podman_container:
-    debug: no 
-    conmon_pidfile: "{{ nextcloud_pidfile }}"
-    image: "{{ nextcloud_image }}:{{ nextcloud_version }}"
-    image_strict: yes
-    recreate: yes
-    state: started
-    name: "{{ nextcloud_name }}"
-    env: "{{ nextcloud_config }}"
-    volume: "{{ nextcloud_volumes }}"
-    ports: "{{ nextcloud_ports }}"
+- import_tasks: podman.yml
+- import_tasks: systemd.yml
