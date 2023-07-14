@@ -1,0 +1,52 @@
+---
+nextcloud_ports:
+  - "{{ nextcloud_fpm_upstream|default(9000) }}:9000"
+
+nextcloud_create_volumes:
+  - nc_html
+  - nc_apps
+  - nc_config
+  - nc_data
+
+nextcloud_volumes:
+  - nc_html:/var/www/html:Z # Main folder, needed for updating
+  - nc_apps:/var/www/html/custom_apps:Z # Volume for installed/modified apps
+  - nc_config:/var/www/html/config:Z # Volume for local configuration
+  - nc_data:/var/www/html/data:Z # Volume for the actual data of Nextcloud
+# - /var/run/postgresql:/var/run/postgresql
+
+# Vars for Nextcloud container
+nextcloud_pidfile: /tmp/nextcloud.pid
+nextcloud_image: docker.io/library/nextcloud
+nextcloud_version: fpm-alpine # https://hub.docker.com/_/nextcloud
+nextcloud_name: nextcloud
+
+# https://github.com/nextcloud/docker/blob/master/README.md#auto-configuration-via-environment-variables
+nextcloud_config: []
+# NEXTCLOUD_ADMIN_USER: admin
+# NEXTCLOUD_ADMIN_PASSWORD: ""
+# NEXTCLOUD_DATA_DIR: /var/www/html/data
+# NEXTCLOUD_TRUSTED_DOMAINS: ""
+
+# SQLITE_DATABASE: nextcloud
+
+# MYSQL_DATABASE: nextcloud
+# MYSQL_USER: nextcloud
+# MYSQL_PASSWORD: ""
+# MYSQL_HOST: host.containers.internal
+
+# POSTGRES_HOST: /var/run/postgresql
+# POSTGRES_DB: nextcloud
+# POSTGRES_USER: nextcloud
+# POSTGRES_PASSWORD: ""
+
+# REDIS_HOST: host.containers.internal
+
+# SMTP_HOST: ""
+# SMTP_SECURE: ""  # ssl to use SSL, or tls zu use STARTTLS
+# SMTP_PORT: "" # (25, 465 for SSL, 587 for STARTTLS)
+# SMTP_AUTHTYPE: ""
+# SMTP_NAME: ""
+# SMTP_PASSWORD: ""
+# MAIL_FROM_ADDRESS: ""
+# MAIL_DOMAIN: ""
