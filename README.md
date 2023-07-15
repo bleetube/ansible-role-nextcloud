@@ -1,6 +1,6 @@
 # Ansible Role: nextcloud
 
-This Ansible Role installs a rootless [Nextcloud](https://github.com/nextcloud/docker) container using Podman. It is intended to be composed with separate roles for Podman and any database backend such as PostgreSQL or Mariadb.
+This Ansible Role installs a rootless [Nextcloud](https://github.com/nextcloud/docker) container using Podman. It is intended to be composed with separate roles for Podman, database, and web proxy.
 
 ## Requirements
 
