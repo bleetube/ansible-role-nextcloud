@@ -33,6 +33,12 @@ See the role [defaults](defaults/main.yml) and the Nextcloud [environment variab
     - import_tasks: nginx_conf.yml
 ```
 
+## Systemd
+
+```
+systemctl --user status container-nextcloud.service
+```
+
 ## Upgrades
 
 Configure `nextcloud_version`.
