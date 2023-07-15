@@ -1,0 +1,26 @@
+---
+- name: Nextcloud | Create volumes
+  containers.podman.podman_volume:
+    state: present
+    name: "{{ item }}"
+    recreate: no
+    debug: no
+  loop: "{{ nextcloud_create_volumes }}"
+
+# https://github.com/nextcloud/docker/blob/master/.examples/docker-compose/with-nginx-proxy/mariadb/fpm/docker-compose.yml
+- name: Nextcloud | Create container
+  containers.podman.podman_container:
+    debug: no 
+#   conmon_pidfile: "{{ nextcloud_pidfile }}"
+    image: "{{ nextcloud_image }}:{{ nextcloud_version }}"
+    image_strict: yes
+    recreate: yes
+    state: present
+    name: "{{ nextcloud_name }}"
+    env: "{{ nextcloud_config }}"
+    volume: "{{ nextcloud_volumes }}"
+    ports: "{{ nextcloud_ports }}"
+  register: podman_output
+
+- ansible.builtin.debug:
+    var: podman_output
