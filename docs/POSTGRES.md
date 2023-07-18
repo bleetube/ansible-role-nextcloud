@@ -14,7 +14,7 @@ This variation of the [original role](https://github.com/Tronde/ansible_role_dep
 ```yaml
 postgresql_users:
   - name: nextcloud
-    pass: "{{ lookup('ansible.builtin.env', 'wartortle_NEXTCLOUD_POSTGRES_PASSWORD') }}"
+    pass: "{{ lookup('ansible.builtin.env', 'NEXTCLOUD_POSTGRES_PASSWORD') }}"
     encrypted: yes
     state: present
 
