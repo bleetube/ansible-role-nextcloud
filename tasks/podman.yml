@@ -11,7 +11,6 @@
 - name: Nextcloud | Create container
   containers.podman.podman_container:
     debug: no 
-#   conmon_pidfile: "{{ nextcloud_pidfile }}"
     image: "{{ nextcloud_image }}:{{ nextcloud_version }}"
     image_strict: yes
     recreate: yes
