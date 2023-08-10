@@ -31,8 +31,7 @@ In this example, there are two users because both `localhost` and `%` (all-hosts
 I'm temporarily using this branch to get PG15:
 
 ```yaml
-# - src: https://github.com/ANXS/postgresql
-  - src: https://github.com/VladDm93/postgresql
-    version: postgres-14-15-support
+  - src: https://github.com/ANXS/postgresql
     name: anxs.postgresql
+    version: development
 ```
