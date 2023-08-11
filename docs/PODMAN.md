@@ -1,11 +1,28 @@
 # Podman
 
-Example using [alvistack/ansible-role-podman](https://github.com/alvistack/ansible-role-podman):
-
+Example using [alvistack/ansible-role-podman](https://github.com/alvistack/ansible-role-podman) on Ubuntu. It currently requires working around the deprecated apt_key usage, and ensuring linger for the ansible/podman user. This should be addressed in the future.
 
 ```yaml
+---
 - hosts: podman
   become: true
+
+  vars:
+    podman_apt_key_url: "http://downloadcontent.opensuse.org/repositories/home:/alvistack/xUbuntu_22.04/Release.key"
+
+  pre_tasks:
+    - name: anxs.podman | Add podman apt repository key.
+      ansible.builtin.get_url:
+        url: "{{ podman_apt_key_url }}"
+        dest: /usr/share/keyrings/podman-alvistack.asc
+        mode: '0644'
+
+    - name: anxs.podman | Ensure the repository is added with the relevant trusted GPG key
+      ansible.builtin.lineinfile:
+        path: /etc/apt/sources.list.d/podman-alvistack.list
+        regexp: 'apt.podman.org'
+        line: "deb [arch=amd64 signed-by=/usr/share/keyrings/podman-alvistack.asc] http://downloadcontent.opensuse.org/repositories/home:/alvistack/xUbuntu_22.04/ /"
+        create: true
 
   roles:
     - alvistack.podman
@@ -15,4 +32,19 @@ Example using [alvistack/ansible-role-podman](https://github.com/alvistack/ansib
       command:
         cmd: "loginctl enable-linger {{ sysadmin_username }}"
         creates: "/var/lib/systemd/linger/{{ sysadmin_username }}"
+      tags: test
+
+    - name: Ensure the data directories for docker-compose exist and are owned by the user.
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ sysadmin_username }}"
+        group: "{{ sysadmin_username }}"
+      loop:
+        - /var/compose
+
+    - name: alvistack.podman | Remove deprecated apt source entry
+      ansible.builtin.file:
+        path: /etc/apt/sources.list.d/home:alvistack.list
+        state: absent
 ```
