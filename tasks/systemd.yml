@@ -1,29 +1,22 @@
 ---
-- name: Nextcloud | Generate systemd unit file for the container(s)
+- name: Generate systemd unit file for the container(s)
   containers.podman.podman_generate_systemd:
     name: nextcloud
     dest: ~/.config/systemd/user/
     restart_policy: on-failure
     restart_sec: 60
 
-- name: Nextcloud | Ensure container(s) are enabled in systemd, but stop it now because we wanted to use "recreate" in the podman_container task before this.
-  ansible.builtin.systemd:
-    name: container-nextcloud
-    scope: user
-    daemon_reload: true
-    state: stopped
-    enabled: true
-
-- name: Nextcloud | Start the container(s) with systemd, so systemd will know the state of the container(s) moving forward.
+- name: Start the container(s) with systemd, so systemd will know the state of the container(s) moving forward.
   ansible.builtin.systemd:
     name: container-nextcloud
     scope: user
     state: started
-  register: systemd_result
-  until: systemd_result is succeeded
-  retries: 1
+  failed_when: false
+  #register: systemd_result
+  #until: systemd_result is succeeded
+  #retries: 1
 
-- name: Nextcloud | Install systemd timer to run cron jobs
+- name: Install systemd timer to run cron jobs
   ansible.builtin.template:
     src: "{{ item }}.j2"
     dest: "~/.config/systemd/user/{{ item }}"
@@ -31,7 +24,7 @@
     - nextcloud-cron.service
     - nextcloud-cron.timer
 
-- name: Nextcloud | Install systemd timer to run cron jobs
+- name: Install systemd timer to run cron jobs
   ansible.builtin.systemd:
     name: nextcloud-cron.timer
     scope: user
